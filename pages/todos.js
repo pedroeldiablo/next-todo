@@ -34,19 +34,24 @@ function appReducer(state, action) {
 
 const Context = React.createContext();
 
-export default function Todos() {
-  const [state, dispatch] = useReducer(appReducer, []);
-
+function useEffectOnce(callback) {
   const didRun = useRef(false);
   
   useEffect(() => {
     if (!didRun.current){
-      const raw = localStorage.getItem('data');
-      dispatch({type: 'reset', payload: JSON.parse(raw)});
+      callback();
       didRun.current = true;
 
     }
-  
+  });
+};
+
+export default function Todos() {
+  const [state, dispatch] = useReducer(appReducer, []);
+
+  useEffectOnce(() => {
+    const raw = localStorage.getItem('data');
+    dispatch({type: 'reset', payload: JSON.parse(raw)});  
   });
 
   useEffect(() => {
