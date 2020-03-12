@@ -1,8 +1,11 @@
 import Link from 'next/link';
-import React, { useReducer, useContext} from 'react';
+import React, { useReducer, useContext, useEffect} from 'react';
 
 function appReducer(state, action) {
   switch (action.type) {
+    case  'reset': {
+      return action.payload;
+    }
     case 'add': {
       return [ ...state, {
         id: Date.now(),
@@ -33,6 +36,16 @@ const Context = React.createContext();
 
 export default function Todos() {
   const [state, dispatch] = useReducer(appReducer, []);
+
+  useEffect(() => {
+  const raw = localStorage.getItem('data');
+  dispatch({type: 'reset', payload: JSON.parse(raw)});
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('data', JSON.stringify(state));
+  }, [state]);
+
   return (
     <Context.Provider value={dispatch}>
       <h1>Todos</h1>
