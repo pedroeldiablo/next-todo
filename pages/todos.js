@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useReducer, useContext, useEffect} from 'react';
+import React, { useReducer, useContext, useEffect, useRef} from 'react';
 
 function appReducer(state, action) {
   switch (action.type) {
@@ -37,10 +37,17 @@ const Context = React.createContext();
 export default function Todos() {
   const [state, dispatch] = useReducer(appReducer, []);
 
+  const didRun = useRef(false);
+  
   useEffect(() => {
-  const raw = localStorage.getItem('data');
-  dispatch({type: 'reset', payload: JSON.parse(raw)});
-  }, []);
+    if (!didRun.current){
+      const raw = localStorage.getItem('data');
+      dispatch({type: 'reset', payload: JSON.parse(raw)});
+      didRun.current = true;
+
+    }
+  
+  });
 
   useEffect(() => {
     localStorage.setItem('data', JSON.stringify(state));
