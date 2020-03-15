@@ -1,5 +1,35 @@
 import Link from 'next/link';
 import React, { useReducer, useContext, useEffect, useRef} from 'react';
+import styled from 'styled-components'
+
+const Button = styled.button`
+margin: 30px;
+font-size: 2rem;
+border-radius: 20px;
+border: 0.5px solid rgba(255, 255, 255, 0.1);
+text-align: center;
+background-color: #eeeeee;
+padding: 5px;
+box-shadow: -6px -6px 26px 0 rgba(255, 255, 255, 0.83),  6px 6px 26px 0 rgba(217, 210, 200, 0.51);
+`;
+
+const ListBody = styled.div`
+  font-family: helvetica;
+  font-size: 1.5rem;
+  color: #fff;
+  background-color:#eeeeee;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+
+`;
+
+const CheckBox = styled.input`
+
+`;
+
 
 function appReducer(state, action) {
   switch (action.type) {
@@ -87,18 +117,20 @@ function TodosList({ items }) {
 function TodoItem({ id, completed, text }) {
   const dispatch = useContext(Context);
   return (
-      <div
-       style={{
-         display: 'flex',
-         flexDirection: 'row',
-         justifyContent: 'space-between',
-       }}
+      <ListBody
       >
-        <input type="checkbox" checked={completed} onChange={() => dispatch({ type: 'completed', payload: id})} />
+        <CheckBox type="checkbox" checked={completed} onChange={() => dispatch({ type: 'completed', payload: id})} />
         <input type="text" defaultValue={text}  onChange={(evt) => dispatch({ type: 'updatedTodo', payload: {id, text: evt.target.value}})}/>
-        <button onClick={() => dispatch({ type: 'delete', payload: id})}>Delete</button>
-        {id}
-      </div>
+       <DeleteButton id={id}/>
+        <p>{id}</p>
+      </ListBody>
   )
   
+}
+
+function DeleteButton({id}) {
+  const dispatch = useContext(Context);
+  return (
+  <Button onClick={() => dispatch({ type: 'delete', payload: id})}>Delete</Button>
+  )
 }
